@@ -10,6 +10,7 @@
   "author": "Rakib",
   "license": "ISC",
   "dependencies": {
+    "body-parser-graphql": "^1.1.0",
     "express": "^4.17.1",
     "express-graphql": "^0.12.0",
     "graphql": "^16.0.1",
