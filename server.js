@@ -84,8 +84,93 @@ const RootQueryType = new GraphQLObjectType({
   }),
 });
 
+const RootMutationType = new GraphQLObjectType({
+  name: "Mutation",
+  description: "Root Mutation",
+  fields: () => ({
+    addWebsite: {
+      type: websiteType,
+      description: "Add a website",
+      args: {
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        ownerId: { type: new GraphQLNonNull(GraphQLInt) },
+      },
+      resolve: (parent, args) => {
+        const website = {
+          id: Websites.length + 1,
+          name: args.name,
+          ownerId: args.ownerId,
+        };
+        Websites.push(website);
+        return website;
+      },
+    },
+    removeWebsite: {
+      type: websiteType,
+      description: "Remove a Website",
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLInt) },
+      },
+      resolve: (parent, args) => {
+        Websites = Websites.filter((website) => website.id !== args.id);
+        return Websites[args.id];
+      },
+    },
+    addOwner: {
+      type: ownerType,
+      description: "Add an Owner",
+      args: {
+        name: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      resolve: (parent, args) => {
+        const owner = { id: Owners.length + 1, name: args.name };
+        Owners.push(owner);
+        return owner;
+      },
+    },
+    removeOwner: {
+      type: ownerType,
+      description: "Remove an Owner",
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLInt) },
+      },
+      resolve: (parent, args) => {
+        Owners = Owners.filter((owner) => owner.id !== args.id);
+        return Owners[args.id];
+      },
+    },
+    updateOwner: {
+      type: ownerType,
+      description: "Update an Owner",
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLInt) },
+        name: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      resolve: (parent, args) => {
+        Owners[args.id - 1].name = args.name;
+        return Owners[args.id - 1];
+      },
+    },
+    updateWebsite: {
+      type: websiteType,
+      description: "Update a Website",
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLInt) },
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        ownerId: { type: new GraphQLNonNull(GraphQLInt) },
+      },
+      resolve: (parent, args) => {
+        Websites[args.id - 1].name = args.name;
+        Websites[args.id - 1].ownerId = args.ownerId;
+        return Websites[args.id - 1];
+      },
+    },
+  }),
+});
+
 const schema = new GraphQLSchema({
   query: RootQueryType,
+  mutation: RootMutationType,
 });
 
 app.use(
