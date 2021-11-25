@@ -56,12 +56,30 @@ const RootQueryType = new GraphQLObjectType({
     websites: {
       type: new GraphQLList(websiteType),
       description: "List of all websites",
-      resolve: () => Owners,
+      resolve: () => Websites,
     },
     owners: {
       type: new GraphQLList(ownerType),
       description: "List of all owners",
       resolve: () => Owners,
+    },
+    website: {
+      type: websiteType,
+      description: "A single website",
+      args: {
+        id: { type: GraphQLInt },
+      },
+      resolve: (parent, args) =>
+        Websites.find((website) => website.id === args.id),
+    },
+    owner: {
+      type: ownerType,
+      description: "A single owner",
+      args: {
+        id: { type: GraphQLInt },
+      },
+      resolve: (parent, args) =>
+        Websites.find((website) => owner.id === args.id),
     },
   }),
 });
@@ -74,7 +92,6 @@ app.use(
   "/graphql",
   graphqlHTTP({
     schema: schema,
-    // rootValue: root,
     graphiql: true,
   })
 );
